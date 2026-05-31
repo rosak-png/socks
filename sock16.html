@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Silent Sock - Sockipedia</title>
+  <style>
+body {
+  font-family: Georgia, serif;
+  background: #f8f9fa;
+  margin: 0;
+  color: #202122;
+  overflow-x: hidden;
+}
+a { color: #0645ad; text-decoration: none; }
+a:hover { text-decoration: underline; }
+a.new { color: #ba0000; }
+.topbar {
+  background: white;
+  border-bottom: 1px solid #c8ccd1;
+  padding: 12px 20px;
+  font-size: 28px;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.container {
+  max-width: 1100px;
+  margin: auto;
+  background: white;
+  padding: 30px;
+  box-sizing: border-box;
+}
+h1 {
+  font-weight: normal;
+  border-bottom: 1px solid #a2a9b1;
+  padding-bottom: 10px;
+}
+h2 {
+  font-weight: normal;
+  border-bottom: 1px solid #a2a9b1;
+  margin-top: 40px;
+  padding-bottom: 5px;
+}
+p { line-height: 1.8; font-size: 16px; }
+.infobox {
+  width: 300px;
+  float: right;
+  margin: 0 0 20px 20px;
+  border: 1px solid #a2a9b1;
+  background: #f8f9fa;
+}
+.infobox-title {
+  background: #cedff2;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+.infobox img { width: 100%; display: block; }
+.infobox table { width: 100%; border-collapse: collapse; }
+.infobox td { border-top: 1px solid #c8ccd1; padding: 8px; }
+.quote {
+  border-left: 4px solid #a2a9b1;
+  padding-left: 15px;
+  margin: 25px 0;
+  color: #54595d;
+  font-style: italic;
+}
+.photo { width: 100%; margin-top: 20px; border: 1px solid #c8ccd1; display: block; }
+footer {
+  margin-top: 60px;
+  padding-top: 20px;
+  border-top: 1px solid #c8ccd1;
+  color: #54595d;
+  font-size: 14px;
+}
+.back-nav {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+/* ── STORM ANIMATIONS ── */
+
+/* static noise overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 9000;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  mix-blend-mode: multiply; opacity: 0;
+  animation: noise-s linear both;
+  animation-timeline: scroll(root); animation-range: 15% 100%;
+}
+@keyframes noise-s {
+  0%   { opacity: 0;    background-size: 180px 180px; }
+  100% { opacity: 0.11; background-size: 110px 110px; }
+}
+
+/* vortex radial tint */
+body::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 8998; opacity: 0;
+  background: radial-gradient(ellipse at 50% 55%, rgba(60,80,130,0.18) 0%, transparent 65%);
+  animation: vortex-t linear both;
+  animation-timeline: scroll(root); animation-range: 30% 100%;
+}
+@keyframes vortex-t { from { opacity: 0; } to { opacity: 1; } }
+
+/* infobox tilts out */
+.infobox {
+  animation: ib-tilt linear both;
+  animation-timeline: scroll(root); animation-range: 10% 100%;
+  transform-origin: top right;
+}
+@keyframes ib-tilt {
+  0%   { transform: rotate(0deg)  translateX(0); }
+  100% { transform: rotate(3.5deg) translateX(18px); }
+}
+
+/* h1 spreads apart */
+h1 {
+  animation: h1-sp linear both;
+  animation-timeline: scroll(root); animation-range: 0% 65%;
+}
+@keyframes h1-sp {
+  0%   { letter-spacing: 0;   transform: skewX(0deg); }
+  100% { letter-spacing: 3px; transform: skewX(-2deg); }
+}
+
+/* h2 drifts sideways */
+h2 {
+  animation: h2-drift linear both;
+  animation-timeline: scroll(root); animation-range: 10% 100%;
+}
+@keyframes h2-drift {
+  0%   { transform: translateX(0)  skewX(0deg); }
+  100% { transform: translateX(8px) skewX(-1.8deg); }
+}
+
+/* quotes pushed by wind */
+.quote {
+  animation: q-push linear both;
+  animation-timeline: scroll(root); animation-range: 20% 100%;
+}
+@keyframes q-push {
+  0%   { transform: translateX(0)   rotate(0deg); }
+  100% { transform: translateX(14px) rotate(0.6deg); }
+}
+
+/* photo tilts */
+.photo {
+  animation: photo-tilt linear both;
+  animation-timeline: scroll(root); animation-range: 25% 100%;
+  transform-origin: bottom center;
+}
+@keyframes photo-tilt {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(-1.2deg) translateX(-6px); }
+}
+
+/* debris particles */
+.debris-wrap {
+  position: fixed; inset: 0; pointer-events: none; z-index: 8997; overflow: hidden;
+}
+.sp {
+  position: absolute; opacity: 0; line-height: 1;
+  animation: sp-drift linear both;
+  animation-timeline: scroll(root);
+}
+.sp:nth-child(1)  { left: 8%;  top:12%; font-size:22px; --dx: 55px; --dy:-80px; --dr: 210deg; animation-range: 8%  55%; }
+.sp:nth-child(2)  { left:88%;  top:18%; font-size:17px; --dx:-85px; --dy:-55px; --dr:-180deg; animation-range:12%  58%; }
+.sp:nth-child(3)  { left:43%;  top: 4%; font-size:20px; --dx: 30px; --dy: 95px; --dr: 295deg; animation-range:20%  65%; }
+.sp:nth-child(4)  { left:72%;  top:68%; font-size:15px; --dx:-58px; --dy:-82px; --dr:-240deg; animation-range:24%  70%; }
+.sp:nth-child(5)  { left:14%;  top:54%; font-size:26px; --dx: 78px; --dy:-65px; --dr: 148deg; animation-range:28%  73%; }
+.sp:nth-child(6)  { left:58%;  top:86%; font-size:18px; --dx:-38px; --dy:-98px; --dr:-290deg; animation-range:33%  77%; }
+.sp:nth-child(7)  { left:93%;  top:43%; font-size:14px; --dx:-78px; --dy: 44px; --dr: 258deg; animation-range:17%  62%; }
+.sp:nth-child(8)  { left:29%;  top:90%; font-size:23px; --dx: 65px; --dy:-75px; --dr:-198deg; animation-range:27%  69%; }
+.sp:nth-child(9)  { left: 3%;  top:77%; font-size:19px; --dx: 85px; --dy:-45px; --dr: 328deg; animation-range:37%  81%; }
+.sp:nth-child(10) { left:63%;  top: 8%; font-size:16px; --dx:-46px; --dy: 74px; --dr:-148deg; animation-range:41%  85%; }
+.sp:nth-child(11) { left:22%;  top:29%; font-size:21px; --dx: 54px; --dy: 84px; --dr: 178deg; animation-range:15%  53%; }
+.sp:nth-child(12) { left:79%;  top:59%; font-size:15px; --dx:-64px; --dy:-34px; --dr:-218deg; animation-range:31%  71%; }
+.sp:nth-child(13) { left:38%;  top:49%; font-size:28px; --dx: 34px; --dy:-88px; --dr: 278deg; animation-range:45%  90%; }
+.sp:nth-child(14) { left:95%;  top:82%; font-size:13px; --dx:-84px; --dy: 24px; --dr:-168deg; animation-range:19%  59%; }
+.sp:nth-child(15) { left:11%;  top:43%; font-size:20px; --dx: 74px; --dy: 54px; --dr: 238deg; animation-range:47%  91%; }
+.sp:nth-child(16) { left:66%;  top:32%; font-size:15px; --dx:-26px; --dy:-74px; --dr:-308deg; animation-range:23%  64%; }
+.sp:nth-child(17) { left:34%;  top:73%; font-size:22px; --dx: 56px; --dy:-54px; --dr: 188deg; animation-range:35%  79%; }
+.sp:nth-child(18) { left:51%;  top:22%; font-size:17px; --dx:-74px; --dy: 64px; --dr:-258deg; animation-range:39%  83%; }
+.sp:nth-child(19) { left:82%;  top:91%; font-size:24px; --dx:-54px; --dy:-74px; --dr: 348deg; animation-range:53%  95%; }
+.sp:nth-child(20) { left:23%;  top: 8%; font-size:19px; --dx: 84px; --dy: 54px; --dr:-188deg; animation-range:57% 100%; }
+@keyframes sp-drift {
+  0%   { opacity: 0;   transform: translate(0,0) rotate(0deg) scale(0.5); }
+  10%  { opacity: 0.9; }
+  80%  { opacity: 0.5; }
+  100% { opacity: 0;   transform: translate(var(--dx),var(--dy)) rotate(var(--dr)) scale(1.4); }
+}
+
+/* red warning banner */
+#storm-warning {
+  position: fixed; bottom: 0; left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  background: #ba0000; color: #fff;
+  font-family: Georgia,serif; font-style: italic; font-size: 12px;
+  letter-spacing: 0.4px; padding: 8px 24px; border-top: 2px solid #800;
+  white-space: nowrap; z-index: 9500; pointer-events: none;
+  animation: warn-r linear both;
+  animation-timeline: scroll(root); animation-range: 52% 100%;
+}
+@keyframes warn-r {
+  0%  { transform: translateX(-50%) translateY(100%); opacity: 0; }
+  8%  { transform: translateX(-50%) translateY(0);    opacity: 1; }
+  38% { transform: translateX(-50%) translateY(0);    opacity: 1; }
+  48% { transform: translateX(-50%) translateY(100%); opacity: 0; }
+  65% { transform: translateX(-50%) translateY(100%); opacity: 0; }
+  75% { transform: translateX(-50%) translateY(0);    opacity: 1; }
+  100%{ transform: translateX(-50%) translateY(0);    opacity: 1; }
+}
+
+@media(max-width:700px) {
+  .infobox { float: none; width: 100%; margin: 0 0 20px; }
+}
+</style>
+</head>
+<body>
+<div class="debris-wrap">
+  <div class="sp">🧦</div><div class="sp">🌀</div><div class="sp">🧦</div><div class="sp">💨</div>
+  <div class="sp">🧦</div><div class="sp">🌪️</div><div class="sp">🧦</div><div class="sp">⚡</div>
+  <div class="sp">🧦</div><div class="sp">🌀</div><div class="sp">🧦</div><div class="sp">💨</div>
+  <div class="sp">🧦</div><div class="sp">🌪️</div><div class="sp">🧦</div><div class="sp">⚡</div>
+  <div class="sp">🧦</div><div class="sp">🌀</div><div class="sp">🧦</div><div class="sp">💨</div>
+</div>
+<div id="storm-warning">⚠ Static levels: CRITICAL — 17 socks unaccounted for</div>
+<div class="topbar">Sockipedia</div>
+<div class="container">
+
+  <div class="back-nav">
+    <a href="sock15.html">← Old Man Cotton</a>
+    <a href="index.html">← Back to The Great Laundry Storm of 1999</a>
+    <a href="sock17.html">Sockimus Prime →</a>
+  </div>
+
+  <h1>The Silent Sock</h1>
+
+  <div class="infobox">
+    <div class="infobox-title">The Silent Sock</div>
+    <img src="sock16.jpeg" alt="The Silent Sock">
+    <table>
+      <tr><td><strong>Age</strong></td><td>7</td></tr>
+      <tr><td><strong>Status</strong></td><td>Survivor — non-verbal</td></tr>
+      <tr><td><strong>Related to</strong></td><td>None identified</td></tr>
+      <tr><td><strong>Last Incident</strong></td><td>The Great Laundry Storm</td></tr>
+    </table>
+  </div>
+
+  <p><b>The Silent Sock</b> is one of three confirmed survivors of the Great Laundry Storm and the only survivor found inside the drum after the cycle concluded.</p>
+  <p>She has not spoken since the night of March 14, 1999. She remains in the drum. She is considered a living memorial.</p>
+
+  <h2>Personal Account</h2>
+  <div class="quote">[no statement provided]</div>
+  <p>The Silent Sock was discovered by <a href="sock2.html">Gary</a> at 10:04 PM, two minutes after the cycle ended.</p>
+  <p>He described her as sitting in the centre of the drum, completely still, facing the back wall.</p>
+ 
+  <p>Attempts to interview her for the DTAB inquiry produced no verbal response.</p>
+  <p>Investigators noted in their report that she was 'clearly present and aware of proceedings, and appeared to be listening carefully.'</p>
+
+  <h2>Protected Status</h2>
+  <div class="quote">[silence]</div>
+  <p>At the 2001 SSSN annual meeting, a motion to launder The Silent Sock was raised by a newer household sock who felt the drum should be 'cleared and reclaimed.'</p>
+  <p>The motion was defeated unanimously. A subsequent motion in 2005 was not even seconded.</p>
+  <p>She has remained in the drum ever since, in roughly the same position Gary found her.</p>
+  <p>All offers of relocation, laundering, or repatriation to the drawer have been declined by consensus vote.</p>
+
+  <h2>Legacy</h2>
+  <p>She has remained in the drum ever since, in roughly the same position Gary found her.</p>
+  <p>All offers of relocation, laundering, or repatriation to the drawer have been declined by consensus vote.</p>
+
+  <footer>
+    This article is part of Sockipedia, the free encyclopedia of tragic and mysterious sock history.
+    <br><br>
+    <a href="index.html">← Back to The Great Laundry Storm of 1999</a>
+  </footer>
+
+</div>
+</body>
+</html>
